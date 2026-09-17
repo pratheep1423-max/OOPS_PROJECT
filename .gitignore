@@ -1,0 +1,50 @@
+## .NET / Visual Studio ignores
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Rider / ReSharper
+.idea/
+*.DotSettings.user
+
+# Logs
+*.log
+
+# Local settings (may contain secrets / connection strings)
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+# Database files (if using LocalDB file-based storage)
+*.mdf
+*.ldf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/

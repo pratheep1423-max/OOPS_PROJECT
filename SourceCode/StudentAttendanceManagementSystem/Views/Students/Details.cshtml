@@ -1,0 +1,39 @@
+@model Student
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<h4 class="mb-3">Student Details</h4>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Register Number</dt>
+            <dd class="col-sm-9">@Model.RegisterNumber</dd>
+
+            <dt class="col-sm-3">Student Name</dt>
+            <dd class="col-sm-9">@Model.StudentName</dd>
+
+            <dt class="col-sm-3">Department</dt>
+            <dd class="col-sm-9">@Model.Department</dd>
+
+            <dt class="col-sm-3">Year</dt>
+            <dd class="col-sm-9">@Model.Year</dd>
+
+            <dt class="col-sm-3">Section</dt>
+            <dd class="col-sm-9">@Model.Section</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Phone Number</dt>
+            <dd class="col-sm-9">@Model.PhoneNumber</dd>
+        </dl>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.StudentId" class="btn btn-primary">Edit</a>
+        }
+    </div>
+</div>

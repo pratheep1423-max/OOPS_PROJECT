@@ -1,0 +1,59 @@
+@model LowAttendanceViewModel
+@{
+    ViewData["Title"] = "Low Attendance";
+}
+
+<h4 class="mb-3">Low Attendance Students <span class="text-muted fs-6">(below @Model.Threshold%)</span></h4>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" asp-action="LowAttendance" class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label">Threshold %</label>
+                <input type="number" step="0.1" name="threshold" value="@Model.Threshold" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100">Apply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Register Number</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Days Present</th>
+                        <th>Days Absent</th>
+                        <th>Attendance %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Students.Any())
+                    {
+                        @foreach (var row in Model.Students)
+                        {
+                            <tr class="table-danger">
+                                <td>@row.RegisterNumber</td>
+                                <td>@row.StudentName</td>
+                                <td>@row.Department</td>
+                                <td>@row.DaysPresent</td>
+                                <td>@row.DaysAbsent</td>
+                                <td><strong>@row.AttendancePercentage%</strong></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-4">No students below the threshold. Great attendance!</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

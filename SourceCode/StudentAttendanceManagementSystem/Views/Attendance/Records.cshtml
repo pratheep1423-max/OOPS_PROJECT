@@ -1,0 +1,111 @@
+@model AttendanceRecordsViewModel
+@{
+    ViewData["Title"] = "Attendance Records";
+}
+
+<h4 class="mb-3">Attendance Records</h4>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" asp-action="Records" class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label">Date</label>
+                <input type="date" name="dateFilter" value="@(Model.DateFilter?.ToString("yyyy-MM-dd"))" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Register Number</label>
+                <input type="text" name="registerNumberSearch" value="@Model.RegisterNumberSearch" class="form-control" placeholder="Search register no." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Department</label>
+                <select name="departmentFilter" class="form-select">
+                    <option value="">All Departments</option>
+                    @foreach (var dept in Model.Departments)
+                    {
+                        <option value="@dept" selected="@(Model.DepartmentFilter == dept)">@dept</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Register Number</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th class="text-end">Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Records.Any())
+                    {
+                        @foreach (var r in Model.Records)
+                        {
+                            <tr>
+                                <td>@r.RegisterNumber</td>
+                                <td>@r.StudentName</td>
+                                <td>@r.Department</td>
+                                <td>@r.AttendanceDate.ToString("dd-MMM-yyyy")</td>
+                                <td>
+                                    @if (r.Status == AttendanceStatus.Present)
+                                    {
+                                        <span class="badge bg-success">Present</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Absent</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                        <input type="hidden" name="attendanceId" value="@r.AttendanceId" />
+                                        <input type="hidden" name="dateFilter" value="@(Model.DateFilter?.ToString("yyyy-MM-dd"))" />
+                                        <input type="hidden" name="registerNumberSearch" value="@Model.RegisterNumberSearch" />
+                                        <input type="hidden" name="departmentFilter" value="@Model.DepartmentFilter" />
+                                        <input type="hidden" name="status" value="@(r.Status == AttendanceStatus.Present ? (int)AttendanceStatus.Absent : (int)AttendanceStatus.Present)" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            Mark @(r.Status == AttendanceStatus.Present ? "Absent" : "Present")
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-4">No attendance records found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination mb-0 justify-content-center">
+                    @for (int p = 1; p <= Model.TotalPages; p++)
+                    {
+                        <li class="page-item @(p == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-action="Records" asp-route-pageNumber="@p"
+                               asp-route-dateFilter="@(Model.DateFilter?.ToString("yyyy-MM-dd"))"
+                               asp-route-registerNumberSearch="@Model.RegisterNumberSearch"
+                               asp-route-departmentFilter="@Model.DepartmentFilter">@p</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

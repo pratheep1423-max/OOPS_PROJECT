@@ -1,0 +1,31 @@
+@model List<User>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Manage Users</h4>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add User</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.Username</td>
+                        <td><span class="badge bg-secondary">@u.Role</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

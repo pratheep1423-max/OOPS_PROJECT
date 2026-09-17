@@ -1,0 +1,133 @@
+@model AttendanceMarkViewModel
+@{
+    ViewData["Title"] = "Mark Attendance";
+}
+
+<h4 class="mb-3">Mark Attendance</h4>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" asp-action="Mark" class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label">Date</label>
+                <input type="date" name="attendanceDate" value="@Model.AttendanceDate.ToString("yyyy-MM-dd")" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Department</label>
+                <select name="department" class="form-select">
+                    <option value="">Select Department</option>
+                    @foreach (var dept in Model.Departments)
+                    {
+                        <option value="@dept" selected="@(Model.Department == dept)">@dept</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Year</label>
+                <select name="year" class="form-select">
+                    <option value="">Select Year</option>
+                    @for (int y = 1; y <= 5; y++)
+                    {
+                        <option value="@y" selected="@(Model.Year == y)">Year @y</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Section</label>
+                <select name="section" class="form-select">
+                    <option value="">Select Section</option>
+                    @foreach (var sec in Model.Sections)
+                    {
+                        <option value="@sec" selected="@(Model.Section == sec)">@sec</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Load Students</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Students.Any())
+{
+    <form asp-action="Mark" method="post">
+        <input type="hidden" asp-for="AttendanceDate" />
+        <input type="hidden" asp-for="Department" />
+        <input type="hidden" asp-for="Year" />
+        <input type="hidden" asp-for="Section" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-calendar-check"></i> @Model.AttendanceDate.ToString("dd-MMM-yyyy") &mdash; @Model.Department / Year @Model.Year / @Model.Section</span>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-success" id="markAllPresent">Mark All Present</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" id="markAllAbsent">Mark All Absent</button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Register Number</th>
+                                <th>Student Name</th>
+                                <th>Already Marked</th>
+                                <th class="text-center">Present</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Students.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Model.Students[i].RegisterNumber
+                                        <input type="hidden" asp-for="Students[i].StudentId" />
+                                        <input type="hidden" asp-for="Students[i].RegisterNumber" />
+                                        <input type="hidden" asp-for="Students[i].StudentName" />
+                                    </td>
+                                    <td>@Model.Students[i].StudentName</td>
+                                    <td>
+                                        @if (Model.Students[i].AlreadyMarked)
+                                        {
+                                            <span class="badge bg-warning text-dark">Yes - will update</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <input class="form-check-input attendance-checkbox" type="checkbox" asp-for="Students[i].IsPresent" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Attendance</button>
+        </div>
+    </form>
+}
+else
+{
+    <div class="alert alert-info">Select a department, year, and section, then click "Load Students" to begin marking attendance.</div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('markAllPresent')?.addEventListener('click', function () {
+            document.querySelectorAll('.attendance-checkbox').forEach(cb => cb.checked = true);
+        });
+        document.getElementById('markAllAbsent')?.addEventListener('click', function () {
+            document.querySelectorAll('.attendance-checkbox').forEach(cb => cb.checked = false);
+        });
+    </script>
+}
